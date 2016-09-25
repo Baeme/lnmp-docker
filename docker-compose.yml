@@ -1,0 +1,25 @@
+  nginx:
+    image: nginx
+    ports:
+      - 8089:80
+    links:
+      - php-fpm
+    volumes:
+      - /Users/yoga/docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /Users/yoga/docker/nginx/vhost:/etc/nginx/vhost
+  php-fpm:
+    image: chunhei2008/php
+    links:
+      - memcached
+      - redis
+      - beanstalkd
+    volumes:
+      - /Users/yoga/docker/www:/home/docker/www
+      - /Users/yoga/www:/home/workspace
+      - /Users/yoga/docker/wwwlogs:/home/applogs
+  memcached:
+    image: memcached:1.4.31
+  redis:
+    image: redis
+  beanstalkd:
+    image: schickling/beanstalkd
