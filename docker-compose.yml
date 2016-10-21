@@ -33,3 +33,9 @@
       - /Users/yoga/docker/mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: 123456
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+    ports:
+      - 8088:80

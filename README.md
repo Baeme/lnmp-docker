@@ -8,6 +8,7 @@
 4. redis（office）
 5. beanstalkd（schickling/beanstalkd）
 6. mysql (office)
+7. phpmyadmin (phpmyadmin/phpmyadmin)
 
 ## 使用
 
