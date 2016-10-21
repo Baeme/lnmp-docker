@@ -39,3 +39,5 @@
       PMA_HOST: mysql
     ports:
       - 8088:80
+    links:
+      - mysql
