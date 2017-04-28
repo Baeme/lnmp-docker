@@ -10,8 +10,8 @@
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/www:/home/docker/www
   php-fpm:
-    image: chunhei2008/php:phpunit
-    mem_limit: 256M
+    image: chunhei2008/php:gd
+    mem_limit: 1g
     links:
       - memcached
       - redis
