@@ -4,6 +4,9 @@
       - 8089:80
     links:
       - php-fpm
+      - nginx01
+      - nginx02
+      - nginx03
     volumes:
       - /Users/yoga/docker/nginx/nginx.conf:/etc/nginx/nginx.conf
       - /Users/yoga/docker/nginx/vhost:/etc/nginx/vhost
@@ -49,3 +52,36 @@
       - 8088:80
     links:
       - mysql
+  nginx01:
+    image: nginx
+    ports:
+      - 8091:80
+    links:
+      - php-fpm
+    volumes:
+      - /Users/yoga/docker/nginx/nginx01.conf:/etc/nginx/nginx.conf
+      - /Users/yoga/docker/nginx/vhost01:/etc/nginx/vhost
+      - /Users/yoga/www:/home/workspace
+      - /Users/yoga/docker/www:/home/docker/www
+  nginx02:
+    image: nginx
+    ports:
+      - 8092:80
+    links:
+      - php-fpm
+    volumes:
+      - /Users/yoga/docker/nginx/nginx02.conf:/etc/nginx/nginx.conf
+      - /Users/yoga/docker/nginx/vhost02:/etc/nginx/vhost
+      - /Users/yoga/www:/home/workspace
+      - /Users/yoga/docker/www:/home/docker/www
+  nginx03:
+    image: nginx
+    ports:
+      - 8093:80
+    links:
+      - php-fpm
+    volumes:
+      - /Users/yoga/docker/nginx/nginx03.conf:/etc/nginx/nginx.conf
+      - /Users/yoga/docker/nginx/vhost03:/etc/nginx/vhost
+      - /Users/yoga/www:/home/workspace
+      - /Users/yoga/docker/www:/home/docker/www
