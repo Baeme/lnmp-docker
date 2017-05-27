@@ -13,6 +13,7 @@
     volumes:
       - /Users/yoga/docker/nginx/nginx.conf:/etc/nginx/nginx.conf
       - /Users/yoga/docker/nginx/vhost:/etc/nginx/vhost
+      - /Users/yoga/docker/wwwlogs:/etc/nginx/logs
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/www:/home/docker/www
   php-fpm:
