@@ -10,6 +10,7 @@
       - php-fpm01
       - php-fpm02
       - php-fpm03
+      - memcached  
     volumes:
       - /Users/yoga/docker/nginx/nginx.conf:/etc/nginx/nginx.conf
       - /Users/yoga/docker/nginx/vhost:/etc/nginx/vhost
@@ -21,7 +22,8 @@
     mem_limit: 1g
     links:
       - memcached
-      - redis
+      - redis-master
+      - redis-slave
       - beanstalkd
       - mysql
     volumes:
@@ -32,10 +34,22 @@
     image: memcached:1.4.31
     ports:
       - 11211:11211
-  redis:
-    image: redis
+  redis-master:
+    image: chunhei2008/redis:with-config
     ports:
       - 6379:6379
+    volumes:
+      - /Users/yoga/docker/redis/config/redis-master.conf:/etc/redis/redis.conf
+      - /Users/yoga/docker/redis/data/master:/data/
+  redis-slave:
+    image: chunhei2008/redis:with-config
+    ports:
+      - 6380:6379
+    links:
+      - redis-master
+    volumes:
+      - /Users/yoga/docker/redis/config/redis-slave.conf:/etc/redis/redis.conf
+      - /Users/yoga/docker/redis/data/slave:/data/
   beanstalkd:
     image: schickling/beanstalkd
     ports:
@@ -94,7 +108,8 @@
     mem_limit: 1g
     links:
       - memcached
-      - redis
+      - redis-master
+      - redis-slave
       - beanstalkd
       - mysql
     volumes:
@@ -106,7 +121,8 @@
     mem_limit: 1g
     links:
       - memcached
-      - redis
+      - redis-master
+      - redis-slave
       - beanstalkd
       - mysql
     volumes:
@@ -118,7 +134,8 @@
     mem_limit: 1g
     links:
       - memcached
-      - redis
+      - redis-master
+      - redis-slave
       - beanstalkd
       - mysql
     volumes:
