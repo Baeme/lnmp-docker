@@ -1,3 +1,6 @@
+version: '2'
+
+services:
   nginx:
     image: nginx
     ports:
@@ -17,6 +20,8 @@
       - /Users/yoga/docker/wwwlogs:/etc/nginx/logs
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/www:/home/docker/www
+    networks:
+      - default
   php-fpm:
     image: chunhei2008/php:gd
     mem_limit: 1g
@@ -25,15 +30,19 @@
       - redis-master
       - redis-slave
       - beanstalkd
-      - mysql
+      - mysql-master
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/wwwlogs:/home/applogs
+    networks:
+      - default
   memcached:
     image: memcached:1.4.31
     ports:
       - 11211:11211
+    networks:
+      - default
   redis-master:
     image: chunhei2008/redis:with-config
     ports:
@@ -41,6 +50,8 @@
     volumes:
       - /Users/yoga/docker/etc/redis/redis-master.conf:/etc/redis/redis.conf
       - /Users/yoga/docker/redis/data/master:/data/
+    networks:
+      - default
   redis-slave:
     image: chunhei2008/redis:with-config
     ports:
@@ -50,27 +61,24 @@
     volumes:
       - /Users/yoga/docker/etc/redis/redis-slave.conf:/etc/redis/redis.conf
       - /Users/yoga/docker/redis/data/slave:/data/
+    networks:
+      - default
   beanstalkd:
     image: schickling/beanstalkd
     ports:
       - 11300:11300
-  mysql:
-    image: mysql
-    volumes:
-      - /Users/yoga/docker/mysql:/var/lib/mysql
-      - /Users/yoga/docker/etc/mysql:/etc/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: 123456
-    ports:
-      - 3306:3306 
+    networks:
+      - default
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: mysql-master
     ports:
       - 8088:80
     links:
-      - mysql
+      - mysql-master
+    networks:
+      - default
   nginx01:
     image: nginx
     ports:
@@ -82,6 +90,8 @@
       - /Users/yoga/docker/etc/nginx/vhost01:/etc/nginx/vhost01
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/www:/home/docker/www
+    networks:
+      - default
   nginx02:
     image: nginx
     ports:
@@ -93,6 +103,8 @@
       - /Users/yoga/docker/etc/nginx/vhost02:/etc/nginx/vhost02
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/www:/home/docker/www
+    networks:
+      - default
   nginx03:
     image: nginx
     ports:
@@ -104,6 +116,8 @@
       - /Users/yoga/docker/etc/nginx/vhost03:/etc/nginx/vhost03
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/www:/home/docker/www
+    networks:
+      - default
   php-fpm01:
     image: chunhei2008/php:gd
     mem_limit: 1g
@@ -112,11 +126,13 @@
       - redis-master
       - redis-slave
       - beanstalkd
-      - mysql
+      - mysql-master
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/wwwlogs:/home/applogs
+    networks:
+      - default
   php-fpm02:
     image: chunhei2008/php:gd
     mem_limit: 1g
@@ -125,11 +141,13 @@
       - redis-master
       - redis-slave
       - beanstalkd
-      - mysql
+      - mysql-master
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/wwwlogs:/home/applogs
+    networks:
+      - default
   php-fpm03:
     image: chunhei2008/php:gd
     mem_limit: 1g
@@ -138,8 +156,35 @@
       - redis-master
       - redis-slave
       - beanstalkd
-      - mysql
+      - mysql-master
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/wwwlogs:/home/applogs
+    networks:
+      - default
+  mysql-master:
+    image: mysql
+    volumes:
+      - /Users/yoga/docker/mysql/master:/var/lib/mysql
+      - /Users/yoga/docker/etc/mysql/my-master.cnf:/etc/mysql/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    ports:
+      - 3306:3306
+    networks:
+      - default
+  mysql-slave:
+    image: mysql
+    volumes:
+      - /Users/yoga/docker/mysql/slave:/var/lib/mysql
+      - /Users/yoga/docker/etc/mysql/my-slave.cnf:/etc/mysql/my.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    ports:
+      - 3307:3306
+    networks:
+      - default
+networks:
+  default:
+    driver: bridge
