@@ -5,15 +5,6 @@ services:
     image: nginx
     ports:
       - 8089:80
-    links:
-      - php-fpm
-      - nginx01
-      - nginx02
-      - nginx03
-      - php-fpm01
-      - php-fpm02
-      - php-fpm03
-      - memcached  
     volumes:
       - /Users/yoga/docker/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
       - /Users/yoga/docker/etc/nginx/vhost:/etc/nginx/vhost
@@ -25,12 +16,6 @@ services:
   php-fpm:
     image: chunhei2008/php:gd
     mem_limit: 1g
-    links:
-      - memcached
-      - redis-master
-      - redis-slave
-      - beanstalkd
-      - mysql-master
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
@@ -56,8 +41,6 @@ services:
     image: chunhei2008/redis:with-config
     ports:
       - 6380:6379
-    links:
-      - redis-master
     volumes:
       - /Users/yoga/docker/etc/redis/redis-slave.conf:/etc/redis/redis.conf
       - /Users/yoga/docker/redis/data/slave:/data/
@@ -75,16 +58,12 @@ services:
       PMA_HOST: mysql-master
     ports:
       - 8088:80
-    links:
-      - mysql-master
     networks:
       - default
   nginx01:
     image: nginx
     ports:
       - 8091:80
-    links:
-      - php-fpm
     volumes:
       - /Users/yoga/docker/etc/nginx/nginx01.conf:/etc/nginx/nginx.conf
       - /Users/yoga/docker/etc/nginx/vhost01:/etc/nginx/vhost01
@@ -96,8 +75,6 @@ services:
     image: nginx
     ports:
       - 8092:80
-    links:
-      - php-fpm
     volumes:
       - /Users/yoga/docker/etc/nginx/nginx02.conf:/etc/nginx/nginx.conf
       - /Users/yoga/docker/etc/nginx/vhost02:/etc/nginx/vhost02
@@ -109,8 +86,6 @@ services:
     image: nginx
     ports:
       - 8093:80
-    links:
-      - php-fpm
     volumes:
       - /Users/yoga/docker/etc/nginx/nginx03.conf:/etc/nginx/nginx.conf
       - /Users/yoga/docker/etc/nginx/vhost03:/etc/nginx/vhost03
@@ -121,12 +96,6 @@ services:
   php-fpm01:
     image: chunhei2008/php:gd
     mem_limit: 1g
-    links:
-      - memcached
-      - redis-master
-      - redis-slave
-      - beanstalkd
-      - mysql-master
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
@@ -136,12 +105,6 @@ services:
   php-fpm02:
     image: chunhei2008/php:gd
     mem_limit: 1g
-    links:
-      - memcached
-      - redis-master
-      - redis-slave
-      - beanstalkd
-      - mysql-master
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
@@ -151,12 +114,6 @@ services:
   php-fpm03:
     image: chunhei2008/php:gd
     mem_limit: 1g
-    links:
-      - memcached
-      - redis-master
-      - redis-slave
-      - beanstalkd
-      - mysql-master
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
