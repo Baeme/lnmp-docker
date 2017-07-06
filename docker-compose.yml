@@ -25,12 +25,6 @@ services:
   php-fpm:
     image: chunhei2008/php:gd
     mem_limit: 1g
-    links:
-      - memcached
-      - redis-master
-      - redis-slave
-      - beanstalkd
-      - mysql-master
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
@@ -121,12 +115,6 @@ services:
   php-fpm01:
     image: chunhei2008/php:gd
     mem_limit: 1g
-    links:
-      - memcached
-      - redis-master
-      - redis-slave
-      - beanstalkd
-      - mysql-master
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
@@ -136,12 +124,6 @@ services:
   php-fpm02:
     image: chunhei2008/php:gd
     mem_limit: 1g
-    links:
-      - memcached
-      - redis-master
-      - redis-slave
-      - beanstalkd
-      - mysql-master
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
@@ -151,12 +133,6 @@ services:
   php-fpm03:
     image: chunhei2008/php:gd
     mem_limit: 1g
-    links:
-      - memcached
-      - redis-master
-      - redis-slave
-      - beanstalkd
-      - mysql-master
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
