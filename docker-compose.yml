@@ -5,7 +5,7 @@ services:
     image: nginx
     ports:
       - 8089:80
-    links:
+    depends_on:
       - php-fpm
       - nginx01
       - nginx02
@@ -14,6 +14,7 @@ services:
       - php-fpm02
       - php-fpm03
       - memcached  
+      - notify
     volumes:
       - /Users/yoga/docker/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
       - /Users/yoga/docker/etc/nginx/vhost:/etc/nginx/vhost
@@ -23,12 +24,13 @@ services:
     networks:
       - default
   php-fpm:
-    image: chunhei2008/php:gd
-    mem_limit: 1g
+    image: chunhei2008/php:7.1-fpm
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/wwwlogs:/home/applogs
+      - /Users/yoga/docker/xhprof:/tmp/xhprof
+      - /Users/yoga/docker/etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - default
   memcached:
@@ -50,7 +52,7 @@ services:
     image: chunhei2008/redis:with-config
     ports:
       - 6380:6379
-    links:
+    depends_on:
       - redis-master
     volumes:
       - /Users/yoga/docker/etc/redis/redis-slave.conf:/etc/redis/redis.conf
@@ -69,7 +71,7 @@ services:
       PMA_HOST: mysql-master
     ports:
       - 8088:80
-    links:
+    depends_on:
       - mysql-master
     networks:
       - default
@@ -77,7 +79,7 @@ services:
     image: nginx
     ports:
       - 8091:80
-    links:
+    depends_on:
       - php-fpm
     volumes:
       - /Users/yoga/docker/etc/nginx/nginx01.conf:/etc/nginx/nginx.conf
@@ -90,7 +92,7 @@ services:
     image: nginx
     ports:
       - 8092:80
-    links:
+    depends_on:
       - php-fpm
     volumes:
       - /Users/yoga/docker/etc/nginx/nginx02.conf:/etc/nginx/nginx.conf
@@ -103,7 +105,7 @@ services:
     image: nginx
     ports:
       - 8093:80
-    links:
+    depends_on:
       - php-fpm
     volumes:
       - /Users/yoga/docker/etc/nginx/nginx03.conf:/etc/nginx/nginx.conf
@@ -113,30 +115,33 @@ services:
     networks:
       - default
   php-fpm01:
-    image: chunhei2008/php:gd
-    mem_limit: 1g
+    image: chunhei2008/php:7.1-fpm
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/wwwlogs:/home/applogs
+      - /Users/yoga/docker/xhprof:/tmp/xhprof
+      - /Users/yoga/docker/etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - default
   php-fpm02:
-    image: chunhei2008/php:gd
-    mem_limit: 1g
+    image: chunhei2008/php:7.1-fpm
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/wwwlogs:/home/applogs
+      - /Users/yoga/docker/xhprof:/tmp/xhprof
+      - /Users/yoga/docker/etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - default
   php-fpm03:
-    image: chunhei2008/php:gd
-    mem_limit: 1g
+    image: chunhei2008/php:7.1-fpm
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/wwwlogs:/home/applogs
+      - /Users/yoga/docker/xhprof:/tmp/xhprof
+      - /Users/yoga/docker/etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - default
   mysql-master:
@@ -159,6 +164,27 @@ services:
       MYSQL_ROOT_PASSWORD: 123456
     ports:
       - 3307:3306
+    networks:
+      - default
+  notify:
+    image: chunhei2008/php:swoole-2
+    command: php /home/workspace/mmf-lite/artisan notify:server
+    volumes:
+      - /Users/yoga/docker/www:/home/docker/www
+      - /Users/yoga/www:/home/workspace
+      - /Users/yoga/docker/wwwlogs:/home/applogs
+    ports:
+      - 2009:2009
+    networks:
+      - default
+  swoole-1:
+    image: chunhei2008/php:swoole-1
+    volumes:
+      - /Users/yoga/docker/www:/home/docker/www
+      - /Users/yoga/www:/home/workspace
+      - /Users/yoga/docker/wwwlogs:/home/applogs
+    ports:
+      - 2010:2010
     networks:
       - default
 networks:
