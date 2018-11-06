@@ -6,15 +6,16 @@ services:
     ports:
       - 8089:80
     depends_on:
-      - php-fpm
-      - nginx01
-      - nginx02
-      - nginx03
       - php-fpm01
       - php-fpm02
       - php-fpm03
-      - memcached  
-      - notify
+      - php-fpm04
+      - php-fpm05
+      - php-fpm06
+      - php-fpm07
+      - php-fpm08
+      - php-fpm09
+      - php-fpm10
     volumes:
       - /Users/yoga/docker/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
       - /Users/yoga/docker/etc/nginx/vhost:/etc/nginx/vhost
@@ -23,67 +24,25 @@ services:
       - /Users/yoga/docker/www:/home/docker/www
     networks:
       - default
-  php-fpm:
-    image: chunhei2008/php:7.1-fpm
-    volumes:
-      - /Users/yoga/docker/www:/home/docker/www
-      - /Users/yoga/www:/home/workspace
-      - /Users/yoga/docker/wwwlogs:/home/applogs
-      - /Users/yoga/docker/xhprof:/tmp/xhprof
-      - /Users/yoga/docker/etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
-    networks:
-      - default
-  memcached:
-    image: memcached:1.4.31
-    ports:
-      - 11211:11211
-    networks:
-      - default
-  redis-master:
-    image: chunhei2008/redis:with-config
-    ports:
-      - 6379:6379
-    volumes:
-      - /Users/yoga/docker/etc/redis/redis-master.conf:/etc/redis/redis.conf
-      - /Users/yoga/docker/redis/data/master:/data/
-    networks:
-      - default
-  redis-slave:
-    image: chunhei2008/redis:with-config
-    ports:
-      - 6380:6379
-    depends_on:
-      - redis-master
-    volumes:
-      - /Users/yoga/docker/etc/redis/redis-slave.conf:/etc/redis/redis.conf
-      - /Users/yoga/docker/redis/data/slave:/data/
-    networks:
-      - default
-  beanstalkd:
-    image: schickling/beanstalkd
-    ports:
-      - 11300:11300
-    networks:
-      - default
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    environment:
-      PMA_HOST: mysql-master
-    ports:
-      - 8088:80
-    depends_on:
-      - mysql-master
-    networks:
-      - default
   nginx01:
     image: nginx
     ports:
-      - 8091:80
+      - 8081:80
     depends_on:
-      - php-fpm
+      - php-fpm01
+      - php-fpm02
+      - php-fpm03
+      - php-fpm04
+      - php-fpm05
+      - php-fpm06
+      - php-fpm07
+      - php-fpm08
+      - php-fpm09
+      - php-fpm10
     volumes:
-      - /Users/yoga/docker/etc/nginx/nginx01.conf:/etc/nginx/nginx.conf
-      - /Users/yoga/docker/etc/nginx/vhost01:/etc/nginx/vhost01
+      - /Users/yoga/docker/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /Users/yoga/docker/etc/nginx/vhost:/etc/nginx/vhost
+      - /Users/yoga/docker/wwwlogs:/etc/nginx/logs
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/www:/home/docker/www
     networks:
@@ -91,12 +50,22 @@ services:
   nginx02:
     image: nginx
     ports:
-      - 8092:80
+      - 8082:80
     depends_on:
-      - php-fpm
+      - php-fpm01
+      - php-fpm02
+      - php-fpm03
+      - php-fpm04
+      - php-fpm05
+      - php-fpm06
+      - php-fpm07
+      - php-fpm08
+      - php-fpm09
+      - php-fpm10
     volumes:
-      - /Users/yoga/docker/etc/nginx/nginx02.conf:/etc/nginx/nginx.conf
-      - /Users/yoga/docker/etc/nginx/vhost02:/etc/nginx/vhost02
+      - /Users/yoga/docker/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /Users/yoga/docker/etc/nginx/vhost:/etc/nginx/vhost
+      - /Users/yoga/docker/wwwlogs:/etc/nginx/logs
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/www:/home/docker/www
     networks:
@@ -104,14 +73,33 @@ services:
   nginx03:
     image: nginx
     ports:
-      - 8093:80
+      - 8083:80
     depends_on:
-      - php-fpm
+      - php-fpm01
+      - php-fpm02
+      - php-fpm03
+      - php-fpm04
+      - php-fpm05
+      - php-fpm06
+      - php-fpm07
+      - php-fpm08
+      - php-fpm09
+      - php-fpm10
     volumes:
-      - /Users/yoga/docker/etc/nginx/nginx03.conf:/etc/nginx/nginx.conf
-      - /Users/yoga/docker/etc/nginx/vhost03:/etc/nginx/vhost03
+      - /Users/yoga/docker/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /Users/yoga/docker/etc/nginx/vhost:/etc/nginx/vhost
+      - /Users/yoga/docker/wwwlogs:/etc/nginx/logs
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/www:/home/docker/www
+    networks:
+      - default
+  redis-4.0:
+    image: chunhei2008/redis-docker:4.0
+    ports:
+      - 6381:6379
+    volumes:
+      - /Users/yoga/docker/etc/redis/4.0/redis.conf:/etc/redis/redis.conf
+      - /Users/yoga/docker/redis/data/4.0:/data/
     networks:
       - default
   php-fpm01:
@@ -144,47 +132,80 @@ services:
       - /Users/yoga/docker/etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - default
-  mysql-master:
-    image: mysql
-    volumes:
-      - /Users/yoga/docker/mysql/master:/var/lib/mysql
-      - /Users/yoga/docker/etc/mysql/my-master.cnf:/etc/mysql/my.cnf
-    environment:
-      MYSQL_ROOT_PASSWORD: 123456
-    ports:
-      - 3306:3306
-    networks:
-      - default
-  mysql-slave:
-    image: mysql
-    volumes:
-      - /Users/yoga/docker/mysql/slave:/var/lib/mysql
-      - /Users/yoga/docker/etc/mysql/my-slave.cnf:/etc/mysql/my.cnf
-    environment:
-      MYSQL_ROOT_PASSWORD: 123456
-    ports:
-      - 3307:3306
-    networks:
-      - default
-  notify:
-    image: chunhei2008/php:swoole-2
-    command: php /home/workspace/mmf-lite/artisan notify:server
+  php-fpm04:
+    image: chunhei2008/php:7.1-fpm
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/wwwlogs:/home/applogs
-    ports:
-      - 2009:2009
+      - /Users/yoga/docker/xhprof:/tmp/xhprof
+      - /Users/yoga/docker/etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
     networks:
       - default
-  swoole-1:
-    image: chunhei2008/php:swoole-1
+  php-fpm05:
+    image: chunhei2008/php:7.1-fpm
     volumes:
       - /Users/yoga/docker/www:/home/docker/www
       - /Users/yoga/www:/home/workspace
       - /Users/yoga/docker/wwwlogs:/home/applogs
-    ports:
-      - 2010:2010
+      - /Users/yoga/docker/xhprof:/tmp/xhprof
+      - /Users/yoga/docker/etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      - default
+  php-fpm06:
+    image: chunhei2008/php:7.1-fpm
+    volumes:
+      - /Users/yoga/docker/www:/home/docker/www
+      - /Users/yoga/www:/home/workspace
+      - /Users/yoga/docker/wwwlogs:/home/applogs
+      - /Users/yoga/docker/xhprof:/tmp/xhprof
+      - /Users/yoga/docker/etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      - default
+  php-fpm07:
+    image: chunhei2008/php:7.1-fpm
+    volumes:
+      - /Users/yoga/docker/www:/home/docker/www
+      - /Users/yoga/www:/home/workspace
+      - /Users/yoga/docker/wwwlogs:/home/applogs
+      - /Users/yoga/docker/xhprof:/tmp/xhprof
+      - /Users/yoga/docker/etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      - default
+  php-fpm08:
+    image: chunhei2008/php:7.1-fpm
+    volumes:
+      - /Users/yoga/docker/www:/home/docker/www
+      - /Users/yoga/www:/home/workspace
+      - /Users/yoga/docker/wwwlogs:/home/applogs
+      - /Users/yoga/docker/xhprof:/tmp/xhprof
+      - /Users/yoga/docker/etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      - default
+  php-fpm09:
+    image: chunhei2008/php:7.1-fpm
+    volumes:
+      - /Users/yoga/docker/www:/home/docker/www
+      - /Users/yoga/www:/home/workspace
+      - /Users/yoga/docker/wwwlogs:/home/applogs
+      - /Users/yoga/docker/xhprof:/tmp/xhprof
+      - /Users/yoga/docker/etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      - default
+  php-fpm10:
+    image: chunhei2008/php:7.1-fpm
+    volumes:
+      - /Users/yoga/docker/www:/home/docker/www
+      - /Users/yoga/www:/home/workspace
+      - /Users/yoga/docker/wwwlogs:/home/applogs
+      - /Users/yoga/docker/xhprof:/tmp/xhprof
+      - /Users/yoga/docker/etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    networks:
+      - default
+  php-grpc:
+    image: chunhei2008/php:7.1-grpc
+    volumes:
+      - /Users/yoga/www:/home/workspace
     networks:
       - default
 networks:
