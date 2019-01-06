@@ -1,0 +1,88 @@
+version: '3.3'
+
+configs:
+  nginx.conf:
+    file: /Users/yoga/docker/etc/nginx/nginx.conf 
+  vhost_7788.conf:
+    file: /Users/yoga/docker/etc/nginx/vhost/7788-swarm.conf
+  vhost_lite.conf:
+    file: /Users/yoga/docker/etc/nginx/vhost/mmf-lite-swarm.conf    
+  www.conf:
+    file: /Users/yoga/docker/etc/php/php-fpm.d/www.conf
+  redis.conf:
+    file: /Users/yoga/docker/etc/redis/4.0/redis.conf
+volumes:
+  redis-data:
+services:
+  nginx:
+    image: nginx
+    depends_on:
+      - php
+    ports:
+      - 80:80
+    configs:
+      - source: nginx.conf
+        target: /etc/nginx/nginx.conf
+      - source: vhost_7788.conf
+        target: /etc/nginx/vhost/7788.conf
+      - source: vhost_lite.conf
+        target: /etc/nginx/vhost/lite.conf        
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 2
+        delay: 2s
+      restart_policy:
+        condition: on-failure
+      labels:
+        nginx.lnmp: "this is nginx node"
+    volumes:
+      - type: bind
+        source: /Users/yoga/www
+        target: /home/workspace
+    networks:
+      - lnmp
+  php-fpm:
+    image: chunhei2008/php:7.1-fpm
+    configs:
+      - source: www.conf
+        target: /usr/local/etc/php-fpm.d/www.conf
+    deploy:
+      replicas: 5
+      update_config:
+        parallelism: 2
+        delay: 2s
+      restart_policy:
+        condition: on-failure
+      labels:
+        nginx.lnmp: "this is php-fpm node"
+    volumes:
+      - type: bind
+        source: /Users/yoga/www
+        target: /home/workspace
+    networks:
+      - lnmp
+  redis-4:
+    image: chunhei2008/redis-docker:4.0
+    ports:
+      - 6379:6379
+    configs:
+      - source: redis.conf
+        target: /etc/redis/redis.conf
+    volumes:
+      - type: volume
+        source: redis-data
+        target: /data      
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 2s
+      restart_policy:
+        condition: on-failure
+      labels:
+        nginx.lnmp: "this is php-fpm node"
+    networks:
+      - lnmp      
+networks:
+  lnmp:
