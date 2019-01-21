@@ -7,6 +7,8 @@ configs:
     file: /Users/yoga/docker/etc/nginx/vhost/7788-swarm.conf
   vhost_lite.conf:
     file: /Users/yoga/docker/etc/nginx/vhost/mmf-lite-swarm.conf  
+  vhost_notify.conf:
+    file: /Users/yoga/docker/etc/nginx/vhost/notify-swarm.conf
   www.conf:
     file: /Users/yoga/docker/etc/php/php-fpm.d/www.conf
   redis.conf:
@@ -27,6 +29,8 @@ services:
         target: /etc/nginx/vhost/7788.conf
       - source: vhost_lite.conf
         target: /etc/nginx/vhost/lite.conf        
+      - source: vhost_notify.conf
+        target: /etc/nginx/vhost/notify.conf
     deploy:
       replicas: 3
       update_config:
@@ -84,5 +88,20 @@ services:
         redis.lnmp: "this is redis node"
     networks:
       - lnmp      
+  notify:
+    image: chunhei2008/mmf-push
+    ports:
+      - 6789:6789
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+        delay: 2s
+      restart_policy:
+        condition: on-failure
+      labels:
+        notify.lnmp: "this is notify node"
+    networks:
+      - lnmp
 networks:
   lnmp:
